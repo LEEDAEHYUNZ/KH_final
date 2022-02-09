@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> <!-- xml 파일의 유효성 체크를 위한 부분 -->
+<mapper namespace="attachment">
+	
+	<!-- 식당 사진 추가 -->
+	<insert id="insertRestaurant" parameterType="attachment">
+		INSERT INTO ATTACHMENT(
+							FILE_NO,
+							RES_NO,
+							REVIEW_NO,
+							FILE_PATH,
+							ORIGIN_NAME,
+							CHANGE_NAME)
+		VALUES(
+			   SEQ_ATT.NEXTVAL,
+			   #{resNo},
+			   NULL,
+			   #{filepath},
+			   #{originName},
+			   #{changeName})
+	</insert>
+	
+	<!-- 식당 정보 수정 -->
+	<update id="updateRestaurant" parameterType="attachment">
+		UPDATE ATTACHMENT
+		SET FILE_PATH = #{filepath} ,
+			ORIGIN_NAME = #{originName} ,
+			CHANGE_NAME = #{changeName} 
+		WHERE FILE_NO = #{fileNo}
+	</update>
+
+	<!-- 식당 수정할때  1.사진지우고 2. 식당정보 수정하고  3. 다시 식당정보 추가 -->
+	<delete id="deletePicture" parameterType="int">
+		DELETE FROM ATTACHMENT
+		WHERE RES_NO = #{resNo}
+	</delete>
+	
+	<select id="atList" resultType="attachment">
+		SELECT *
+		  FROM ATTACHMENT
+	</select>
+	
+	<!-- 리뷰 목록 사진 -->
+	<select id="attReview" resultType="attachment">
+		SELECT *
+		  FROM ATTACHMENT
+	</select>
+	
+	<!-- 리뷰 작성 -->
+	<insert id="insertReview" parameterType="attachment">
+		INSERT INTO ATTACHMENT(
+								FILE_NO,
+								RES_NO,
+								REVIEW_NO,
+								FILE_PATH,
+								ORIGIN_NAME,
+								CHANGE_NAME)
+		VALUES(
+				SEQ_ATT.NEXTVAL,
+				#{resNo},
+				#{reviewNo},
+				#{filepath},
+				#{originName},
+				#{changeName})	
+	</insert>
+	
+	<!-- 리뷰 수정 
+	<update id="updateReview" parameterType="attachment">
+		UPDATE ATTACHMENT
+		   SET FILE_PATH = #{filepath},
+			   ORIGIN_NAME = #{originName},
+			   CHANGE_NAME = #{changeName} 
+		 WHERE REVIEW_NO = #{reviewNo}
+	</update>
+	-->
+	
+	<insert id="updateReview" parameterType="attachment">
+		INSERT INTO ATTACHMENT(
+								FILE_NO,
+								RES_NO,
+								REVIEW_NO,
+								FILE_PATH,
+								ORIGIN_NAME,
+								CHANGE_NAME)
+		VALUES(
+				SEQ_ATT.NEXTVAL,
+				#{resNo},
+				#{reviewNo},
+				#{filepath},
+				#{originName},
+				#{changeName})	
+	</insert>
+	
+	<!-- 리뷰 삭제 -->
+	<delete id="deleteReview" parameterType="int">
+		DELETE FROM ATTACHMENT
+		 WHERE REVIEW_NO = #{reviewNo}
+	</delete>
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+

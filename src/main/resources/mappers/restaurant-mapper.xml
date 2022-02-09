@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+  
+<mapper namespace="restaurant">
+	
+	<select id="restaurantList" resultType="restaurant">
+		SELECT *
+		  FROM RESTAURANT
+		  WHERE RES_NO = #{resNo}
+	</select>
+	
+	<select id="mainList" resultType="restaurant">
+		SELECT RES_NO,
+			   CATEGORY,
+			   RES_NAME,
+			   RES_ADDRESS,
+			   RES_BEST,
+			   RES_STATUS
+		  FROM RESTAURANT
+	</select>
+	
+	<select id="selectMainKeyword" resultType="restaurant">
+		SELECT * FROM RESTAURANT
+		<if test="option==0">
+		WHERE RES_NAME LIKE '%' || #{keyword} || '%' ORDER BY RES_NO DESC
+		</if>
+		<if test="option==1">
+		WHERE RES_ADDRESS LIKE '%' || #{keyword} || '%' ORDER BY RES_NO DESC
+		</if>
+	</select>
+	
+	<!-- 맛집 추가  -->
+	<insert id="insertRestaurant" parameterType="restaurant">
+		INSERT INTO RESTAURANT(
+							RES_NO,
+							CATEGORY,
+							RES_NAME,
+							RES_PHONE,
+							RES_ADDRESS,
+							RES_BEST,
+							RES_CONTENT,
+							RES_STATUS)
+		VALUES(
+			   SEQ_RES.NEXTVAL,
+			   #{category},
+			   #{resName},
+			   #{resPhone},
+			   #{resAddress},
+			   #{resBest},
+			   #{resContent},
+			   DEFAULT)
+	</insert>
+	
+	<!-- 식당등록할때 ATTACHMENT 연결하기 위해서 -->
+  	<select id="selectRestaurantNo" resultType="int" parameterType="restaurant">
+		SELECT RES_NO
+		FROM RESTAURANT
+		WHERE RES_NAME = #{resName} AND
+			  CATEGORY = #{category} AND
+			  RES_PHONE = #{resPhone} AND
+			  RES_ADDRESS = #{resAddress} AND
+			  RES_BEST = #{resBest} AND
+			  RES_CONTENT = #{resContent}
+	</select>
+	
+	<!-- 식당 수정 -->
+	<update id="updateRestaurant" parameterType="restaurant">
+		UPDATE RESTAURANT
+		SET RES_NAME = #{resName} ,
+			CATEGORY = #{category} ,
+			RES_PHONE = #{resPhone} ,
+			RES_ADDRESS = #{resAddress} ,
+			RES_BEST = #{resBest} ,
+			RES_CONTENT = #{resContent}
+		WHERE RES_NO = #{resNo}
+	</update>
+	
+	<!-- 식당삭제 -->
+	<update id="deleteRestaurant" parameterType="restaurant">
+		UPDATE RESTAURANT
+		SET RES_STATUS = 0
+		WHERE RES_NO = #{resNo}
+	</update>
+
+	
+	<!-- 수정 삭제할때 값 받아오기위해 -->
+	<select id="select" resultType="restaurant">
+		SELECT * FROM RESTAURANT
+		WHERE RES_NO = #{resNo} 
+	</select>
+	
+	<!-- 검색기능 구현 -->
+	<select id="search" resultType="restaurant" parameterType="map">
+		SELECT *
+		FROM RESTAURANT
+		WHERE RES_NAME LIKE '%' || #{resName} || '%'
+		AND RES_STATUS = 2
+		ORDER BY RES_ADDRESS DESC
+	</select>
+	
+	<!-- 가게 주소 전체 조회 -->
+	<select id="addressList" resultType="restaurant">
+		SELECT *
+		FROM RESTAURANT
+		WHERE RES_STATUS = 2
+		ORDER BY RES_ADDRESS DESC
+	</select>
+	
+	
+	<!-- 맛집 목록 조회 -->
+	<select id="aselectRestaurantList" parameterType="map" resultType="restaurant">
+	
+		SELECT * FROM (
+		SELECT ROWNUM RNUM, A.*
+		FROM (SELECT *
+		FROM
+		RESTAURANT JOIN CATEGORY ON (RESTAURANT.CATEGORY = CATEGORY.CATEGORY)
+		WHERE RES_STATUS ${num}
+		AND RES_NAME LIKE '%' || #{keyword} || '%'  
+		ORDER BY RES_NO DESC )A)
+		WHERE RNUM BETWEEN #{startRow} AND #{endRow}
+
+
+	</select>
+
+	<!-- 맛집 리스트 수 -->
+	<select id="aselectRestaurantListCount" parameterType="map" resultType="int">
+		SELECT COUNT(*)
+		FROM RESTAURANT
+		WHERE RES_STATUS ${num}
+		AND RES_NAME
+		LIKE '%' || #{keyword} || '%'
+
+	</select>
+	
+	<!-- 맛집 승인 -->
+	<update id="aupdateRestaurantStatus" parameterType="map">
+		UPDATE
+		RESTAURANT SET
+		RES_STATUS = #{changeStatus} WHERE RES_NO = #{resNo}
+	</update>
+	
+	<!-- 맛집 검색 -->
+		<select id="aselectRestaurantKeyword" resultType="restaurant"
+		parameterType="string">
+		SELECT *
+		FROM RESTAURANT JOIN CATEGORY ON (RESTAURANT.CATEGORY =
+		CATEGORY.CATEGORY)
+		WHERE RES_NAME LIKE '%' ||
+		#{keyword} || '%'
+		ORDER BY RES_NO DESC
+	</select>
+
+	<!-- 맛집 승인 거절 1 -->
+	<delete id="adeleteRestaurantStatus1" parameterType="int">
+		DELETE FROM ATTACHMENT WHERE RES_NO = #{resNo}
+	</delete>
+
+	<!-- 맛집 승인 거절 3 -->
+	<update id="adeleteRestaurantStatus3" parameterType="int">
+		UPDATE MEMBER SET RES_NO = NULL WHERE RES_NO = #{resNo}
+	</update>
+
+	<!-- 맛집 승인 거절 2 -->
+	<delete id="adeleteRestaurantStatus2" parameterType="int">
+		DELETE FROM RESTAURANT WHERE RES_NO = #{resNo}
+	</delete>
+
+
+	
+</mapper>

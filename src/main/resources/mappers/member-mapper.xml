@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> <!-- xml 파일의 유효성 체크를 위한 부분 -->
+<mapper namespace="member">
+	
+	<!-- 로그인을 위한 SQL 구문 -->
+	<select id="loginMember" resultType="member" parameterType="member">
+		SELECT *
+		FROM MEMBER
+		WHERE MEMBER_ID = #{memberId}
+		  AND MEMBER_PWD = #{memberPwd}
+	</select>
+	
+	<!-- 회원가입 -->
+	<insert id="signUp" parameterType="member">
+		INSERT INTO MEMBER(
+						   MEMBER_NO,
+						   RES_NO,
+						   MEMBER_ID, 
+						   MEMBER_PWD,
+						   MEMBER_NAME,
+						   MEMBER_NICKNAME,
+						   MEMBER_PHONE,
+						   MEMBER_EMAIL,
+						   GENDER,
+						   BIRTH,
+						   ENROLL_DATE,
+						   MEMBER_STATUS
+						   )
+		VALUES(
+			   SEQ_MEM.NEXTVAL,
+			   NUll,
+			   #{memberId}, 
+			   #{memberPwd},
+			   #{memberName},
+			   #{memberNickname},
+			   #{memberPhone},
+			   #{memberEmail},
+			   #{gender},
+			   #{birth},
+			   DEFAULT,
+			   DEFAULT)
+	</insert>
+	
+	<!-- 아이디 중복 체크 : 아이디를 이용한 단일 조회 (중복X) -->
+	<select id="idCheck" resultType="int" parameterType="string">
+		SELECT COUNT(*)
+		FROM MEMBER
+		WHERE MEMBER_ID = #{memberId}
+	</select>
+	
+	<!-- 별명체크 -->
+		<select id="nickCheck" resultType="int" parameterType="string">
+		SELECT COUNT(*)
+		FROM MEMBER
+		WHERE MEMBER_NICKNAME = #{memberNickname}
+	</select>
+	
+	<!-- 아이디 중복 체크 : 아이디를 이용한 단일 조회 (중복X)  태경씨-->
+	<!-- 아이디를 이용한 단일 조회 -->
+	<select id="memberModify" resultType="member" parameterType="member">
+		SELECT *
+		FROM MEMBER
+		WHERE MEMBER_ID = #{memberId}
+	</select>
+	
+	<!-- 개인정보 수정 -->
+	<update id="modifyWrite" parameterType="member">
+		UPDATE MEMBER
+		   SET MEMBER_NICKNAME = #{memberNickname},
+		   	   MEMBER_PWD = #{memberPwd},
+		   	   MEMBER_PHONE = #{memberPhone},
+		   	   MEMBER_EMAIL = #{memberEmail}
+		 WHERE MEMBER_ID = #{memberId}
+	</update>
+
+
+	<!-- 개인정보로 가기위한 비밀번호 확인 -->
+	
+	<select resultType="int" parameterType="member" id="passwordVertify">
+		 SELECT *
+		 FROM MEMBER
+		 WHERE MEMBER_ID = #{memberId} 
+		   AND MEMBER_PWD = #{memberPwd} 
+	 </select>
+		
+		
+	<!-- 별명체크 -->
+
+
+	<!-- 아이디 찾기  창희씨-->
+	<select id="findId" resultType="String" parameterType="member">
+		SELECT MEMBER_ID
+		FROM MEMBER
+		WHERE MEMBER_NAME = #{memberName} AND MEMBER_EMAIL = #{memberEmail}
+	</select>
+	
+	<!-- 비밀번호찾기 -->
+	<select id="getPw" parameterType="member" resultType="string">
+		SELECT MEMBER_PWD
+		FROM MEMBER 
+		WHERE MEMBER_ID = #{memberId} AND MEMBER_EMAIL = #{memberEmail}
+	</select>
+	
+	<!-- 회원 상태변경 (사업자 요청) -->
+	<update id="memStatus" parameterType="map">
+		UPDATE MEMBER 
+		SET MEMBER_STATUS = 2,
+		RES_NO = #{resNo}
+		WHERE MEMBER_NO = #{memberNo}
+	</update>
+	
+	<update id="updateresno" parameterType="member">
+		UPDATE MEMBER
+		SET RES_NO = #{resNo}
+		WHERE MEMBER_NO = #{memberNo}
+	</update>
+	
+	<update id="updateMemberResNo" parameterType="int">
+      UPDATE MEMBER
+      SET RES_NO = NULL
+      WHERE RES_NO = #{resNo}
+   </update>
+   
+   	<!-- 회원 목록 조회 -->
+	<select id="aselectMemberList" parameterType="map" resultType="member">
+		SELECT * FROM (
+		SELECT ROWNUM RNUM, A.*
+		FROM (SELECT *
+		FROM
+		MEMBER
+		WHERE MEMBER_STATUS ${num}
+		AND MEMBER_ID 
+		LIKE '%' || #{keyword} || '%'
+		AND MEMBER_NO > 1  
+		ORDER BY ENROLL_DATE DESC )A)
+		WHERE RNUM BETWEEN #{startRow} AND #{endRow}
+	</select>
+
+	<!-- 전체 회원리스트 수 -->
+	<select id="aselectMemberListCount" parameterType="map" resultType="int">
+		SELECT COUNT(*)
+		FROM MEMBER
+		WHERE MEMBER_STATUS ${num}
+		AND MEMBER_ID LIKE '%' || #{keyword} || '%' 
+		AND MEMBER_NO > 1 
+		
+		
+	</select>
+
+
+	<!-- 회원 업데이트 -->
+	<update id="aupdateMemberStatus" parameterType="map">
+		UPDATE MEMBER SET
+		MEMBER_STATUS = #{changeStatus} WHERE MEMBER_NO = #{memberNo}
+	</update>
+
+
+	<!-- 회원 검색 -->
+	<select id="aselectMemberKeyword" resultType="member" parameterType="string">
+		SELECT *
+		FROM MEMBER
+		WHERE MEMBER_STATUS IN (0,1,2) AND
+		MEMBER_ID LIKE '%' ||
+		#{keyword} || '%'
+		ORDER BY MEMBER_NO DESC
+	</select>
+   
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

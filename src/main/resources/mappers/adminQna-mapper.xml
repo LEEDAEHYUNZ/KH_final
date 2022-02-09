@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> <!-- xml 파일의 유효성 체크를 위한 부분 -->
+<mapper namespace="qna">
+
+	<!-- Qna 목록 조회 -->
+	<select id="aselectQnaList" parameterType="map" resultType="qna">
+		SELECT * FROM (
+		SELECT ROWNUM RNUM, A.*
+		FROM (SELECT *
+		FROM
+		QNA JOIN MEMBER USING(MEMBER_NO)
+		WHERE QNA_STATUS ${num}
+		AND QNA_TITLE LIKE '%' || #{keyword} || '%'  
+		ORDER BY QNA_DATE DESC )A)
+		WHERE RNUM BETWEEN #{startRow} AND #{endRow}
+		
+		
+	</select>
+
+	<!-- Qna 리스트 수 -->
+	<select id="aselectQnaListCount" parameterType="map"
+		resultType="int">
+		SELECT COUNT(*)
+		FROM QNA
+		WHERE QNA_STATUS ${num}
+		AND QNA_TITLE
+		LIKE '%' || #{keyword} || '%'
+
+	</select>
+	
+	<!--  Qna 답변 달기  -->
+	<update id="aupdateQnaAnswer" parameterType="map">
+		UPDATE
+		QNA SET
+		QNA_ANSWER = #{qnaAnswer},
+		QNA_STATUS = 'Y'
+		WHERE QNA_NO = #{qnaNo}
+
+	</update>
+	
+	<!-- QNA 목록 조회 -->
+	<select id="qnaViewList" parameterType="map" resultType="qna">
+		SELECT * FROM (
+		SELECT ROWNUM RNUM, A.*
+		FROM ( SELECT *
+		FROM QNA
+		WHERE MEMBER_NO = #{ memberNo } )A)
+		WHERE RNUM BETWEEN #{startRow} AND #{endRow}
+	</select>
+	
+		<!-- QNA 카운트 수 -->
+	<select id="qnaCount" parameterType="int" resultType="int">
+		SELECT COUNT(*)
+		FROM QNA
+		WHERE MEMBER_NO = #{memberNo}
+	</select>
+	
+	<!--  QNA 목록 상세 조회 -->
+	<select id="qnaAnswer" resultType="qna">
+		SELECT *
+		FROM QNA
+		WHERE QNA_NO = #{qnaNo}
+	</select>
+	
+	<!-- QNA 작성 -->
+	
+	<insert id="qnaWrite" parameterType="qna">
+	INSERT INTO QNA(
+			QNA_NO,
+			MEMBER_NO,
+			QNA_TITLE,
+			QNA_CONTENT,
+			QNA_DATE,
+			QNA_ANSWER,
+			QNA_STATUS
+			 ) 
+	 VALUES( 
+	 		  SEQ_QNA.NEXTVAL,
+			  #{memberNo},
+			  #{qnaTitle},
+			  #{qnaContent},
+			  DEFAULT,
+			  NULL,
+			  DEFAULT
+			  )
+	</insert>
+	
+	<delete id="deleteQNA" parameterType="int">
+	DELETE
+	FROM QNA
+	WHERE QNA_NO = #{ qnaNo }
+	</delete>
+
+	<update id="updateQNA" parameterType="qna">
+	UPDATE QNA
+	   SET QNA_TITLE = #{ qnaTitle},
+		   QNA_Content = #{ qnaContent },
+		   QNA_DATE = DEFAULT
+	 WHERE QNA_NO = #{ qnaNo }
+	</update>
+</mapper>

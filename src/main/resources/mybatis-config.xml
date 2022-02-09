@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd"> 
+  <!-- xml 파일의 유효성 체크를 위한 부분 -->
+<configuration>
+
+	<!-- MyBatis 를 운용하기 위한 설정이 있다면 이곳에 작성하는 것이 원칙 -->
+	
+	<!-- properties : 이 문서 또는 외부에서 사용할 환경 설정과 관련된 변수를 지정 -->
+	<properties></properties>
+
+	<!-- 
+		settings : MyBatis 실행 중 반영되어야 할 규칙을 지정 
+				      필요할 때마다 개발자 문서를 찾자	
+	-->
+	<settings>
+		<setting name="cacheEnabled" value="true" /> 
+		<!-- 캐시 메모리를 사용할지 말지 결정하는 속성 (무조건 쓴다고 좋은 것은 아님) -->
+		
+		<setting name="lazyLoadingEnabled" value="true" />
+		<!-- 지연 로딩을 사용할지 말지 결정하는 속성 (무조건 쓴다고 좋은 것은 아님) -->
+		
+		<setting name="autoMappingBehavior" value="FULL" />
+		<!--  
+			컬럼을 필드/프로퍼티에 자동으로 맵핑할지 말지 결정하는 속성 
+			(무조건 하면 개발자 입장에서 편함 -> 단, 성능이 좀 떨어질 수 있음)
+			NONE / PARTIAL / FULL
+		-->
+		
+		<setting name="mapUnderscoreToCamelCase" value="true" />
+		<!--  
+			MyBatis 에서는 컬럼명과 필드명을 일치시켜야 하는데 
+			우리가 자바에서는 낙타표기법을 쓰고 있고 DB 에서는 언더바표기법을 쓰고 있기 때문에
+			이 두 가지 표현법을 호환시켜주는 설정
+		-->
+		
+	</settings>
+	
+	<!-- typeAliases : VO 클래스에 별칭을 지정하겠다 -->
+	
+	<typeAliases>
+		<typeAlias alias="review" type="com.kh.dplate.review.model.vo.Review" />
+		<typeAlias alias="business" type="com.kh.dplate.business.model.vo.Business" />
+		<typeAlias alias="qna" type="com.kh.dplate.qna.model.vo.Qna" />
+		<typeAlias alias="restaurant" type="com.kh.dplate.restaurant.model.vo.Restaurant"/>
+		<typeAlias alias="attachment" type="com.kh.dplate.attachment.model.vo.Attachment"/>
+		<typeAlias alias="member" type="com.kh.dplate.member.model.vo.Member"/>
+		<typeAlias alias="bookmark" type="com.kh.dplate.bookmark.model.vo.Bookmark"/>
+		<typeAlias alias="reservation" type="com.kh.dplate.reservation.model.vo.Reservation"/>
+		<typeAlias alias="reservationtime" type="com.kh.dplate.reservationtime.model.vo.ReservationTime" />
+	</typeAliases>
+	
+		
+	
+	
+</configuration>

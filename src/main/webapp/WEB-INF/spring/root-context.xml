@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						https://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/context 
+						https://www.springframework.org/schema/context/spring-context.xsd">
+	
+	<!-- 
+		xmlns : 자동으로 beans 라는 접두어를 태그 앞에 생략된 형태로 붙여주겠다 
+				즉, 태그 작성 시 자동으로 beans 라는 접두어가 붙으므로 beans 를 생략된 형태로 작성해야 한다
+				-> beans:bean 과 beans:property 를 각각 bean 과 property 로 변경
+				(ns == namespace)
+		xmlns:xsi : 인증서 정보
+		xsi:schemaLocation : 위치 정보
+	-->
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	<!-- DispatcherServlet 과 관련된 설정 이외의 모든 요소에 대한 설정들을 작성한다 -->
+	
+	<!--  
+		도구 분리의 기준 : 
+		DispatcherServlet 과 관련된 설정들은 servlet-context.xml 에 넣는다
+		(== 사용자의 요청(submit 버튼 클릭)이 있을 때만 써야하는  설정들은 servlet-context.xml)
+	-->
+	
+	<!-- 
+		jar 를 다운받았다고 그냥 쓸 수 있는 것이 아님!!
+		jar 파일 안에 패키지 안에 내가 쓰고자 하는 .class 파일을 도구(bean)로써 가져다 쓰겠다고 추가를 해줘야 한다
+		
+		* jar 파일 추가 순서
+		1. pom.xml 에 내가 필요로 하는 jar 파일을 dependency 태드로 추가하는 구문 작성
+		2. Maven Upate -> Maven Dependencied 에 추가된 것 확인
+		3. 내가 그 중에서도 필요한 도구를 servlet-context.xml 파일에 bean 으로 등록
+	
+		* 데이터베이스 도구 등록
+		- 연결 도구 : org.springframework.jdbc.datasource.DriverManagerDataSource.class
+		- 명령 도구 : org.springframework.jdbc.core.JdbcTemplate.class
+	
+		-> DB 처리 같은 경우는 Controller 가 아닌 DAO 에서 이뤄지므로 root-context.xml 로 옮겼음
+		
+		* 모든 도구들이 servlet-context.xml 에 있었을 때도 작동했던 이유?
+		  root-context.xml 과 servlet-context.xml 은 일종의 '상속관계'이기 때문
+		  root-context.xml(부모) : servlet-context.xml(자식) 
+		  -> 자식은 부모의 것을 가져다 쓸 수 있지만 부모는 자식의 것을 가져다 쓸 수 없다
+	-->
+	
+	<!-- DB 라이브러리 관련 설정 파일  -->
+	<!-- 연결 도구 등록 -->
+	<!-- 연결 도구를 등록하기 전에 외부 properties 형식의 파일을 갖고 와서 연동하겠다 -->
+	<context:property-placeholder location="classpath:/jdbc/driver.properties" />
+	<!-- 도구를 등록하겠다 / class="어디서(확장자는 뺴줘야 한다)" -->
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"> 
+		<!-- 추가적인 도구 사용법 (환경설정값) -> key+value 세트로 등록 -->
+		<!-- driverClassName, url, username, password 등록 -> driver.properties 에 있던 속성들 -->
+		<property name="driverClassName" value="${jdbc.driver}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+	</bean>
+	
+	<!-- 명령 도구 등록 -->
+	<!-- id 값은 객체명(== 도구명), class(의 가장 마지막 부분) 값은 클래스명(== 도구타입) -->
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate"> 
+		<property name="dataSource" ref="dataSource" /> 
+		<!-- 
+			명령을 내릴 때 위에서 지정했던 연결도구를 참조해서 명령을 내리겠다
+			위에서 지정한 연결도구의 아이디 값을 ref로 참조해서 가져다 쓰겠다 
+			== 도구에서 도구를 가져다 쓰겠다 
+			== DI (Dependency Injection) : 필요한 도구를 주입시키겠다
+		-->
+	</bean>	
+	
+	<!--  
+		* MyBatis 를 이용하기 위한 도구를 등록
+		- sqlSession : 실제로 SQL 구문을 실행시키는 도구 (== 명령 도구) 
+					   -> org.mybatis.spring.SqlSessionFactoryBean.class
+		- sqlSessionTemplate : 구문 실행을 위한 템플릿을 제공하는 도구 (== 연결 도구)
+							   JDBC 에서 JDBCTemplate 클래스의 역할
+							   -> org.mybatis.spring.SqlSessionTemplate.class
+	-->
+	
+	<!-- MyBatis 라이브러리 관련 설정 파일  -->
+	<!-- sqlSession : 명령 도구 (== 실행 도구) 를 등록 -->
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<!-- 연결을 위한 도구를 참조 설정 : 연결 정보를 끌어다 씀 -->
+		<property name="dataSource" ref="dataSource" />
+		<!-- MyBatis 설정 파일(mybatis-config.xml)의 위치를 지정 -->
+		<property name="configLocation" value="classpath:/mybatis-config.xml" />
+		<!-- 실제 실행할 쿼리문이 담긴 명령 파일 (xxx-mapper.xml) 위치를 지정 -->
+		<property name="mapperLocations" value="classpath:/mappers/**/*-mapper.xml" />
+	</bean>
+	
+	<!-- sqlSessionTemplate : 연결 도구를 등록 -->
+	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+		<!-- MyBatis 실행 도구에 대한 참조 설정 -->
+		<constructor-arg index="0" ref="sqlSession" />
+	</bean>
+	
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="smtp.gmail.com"/>
+		<property name="port" value="587"/>
+		<property name="username" value="whckdgml10@gmail.com"/>
+		<property name="password" value="changhee78@"/>
+		<property name="javaMailProperties">
+		<props>
+			<prop key="mail.smtp.ssl.trust">smtp.gmail.com</prop>
+			<prop key="mail.smtp.starttls.enable">true</prop>
+			<prop key="mail.smtp.auth">true</prop>
+		</props>
+		</property>
+	</bean>	
+</beans>
