@@ -24,12 +24,10 @@ public class BookmarkServiceImpl implements BookmarkService {
 		return bookmarkDao.saveheart(to);
 	}
 	
-
 	@Override
 	public int removeheart(Bookmark to) {
 		return bookmarkDao.removeheart(to);
 	}
-
 
 	@Override
 	public List<Bookmark> boselectList(Bookmark bookmark) {
@@ -40,21 +38,17 @@ public class BookmarkServiceImpl implements BookmarkService {
 	// 전체 조회 기능
 	@Override
 	public List<Bookmark> bookmarkList(PageInfo pi,int memberNo) {
-		
 		return bookmarkDao.bookmarkList(pi,memberNo);
 	}
 	
 	@Override
 	public int myBookmarkDelete(int bookmarkNo) {
-		
 		int result = bookmarkDao.myBookmarkDelete(bookmarkNo);
-		
 		return result;
 	}
 
 	@Override
 	public int bookmarkCount(int memberNo) {
-	
 		return bookmarkDao.bookmarkCount(memberNo);
 	}
 }

@@ -26,7 +26,6 @@ public interface AdminDao {
 
 	int updateRestaurantStatus(Map<String, Integer> param);
 
-
 	List<Business> selectBusinessList(PageInfo pi, int sort, String keyword);
 
 	List<Review> selectReviewList(PageInfo pi, String keyword);

@@ -125,28 +125,6 @@ public class RestaurantController {
 			return "home";
 		}
 		
-//		@GetMapping("/restaurantList/{resNo}")
-//		public String restaurantList(
-//				@PathVariable int resNo,
-//				@ModelAttribute Attachment attachment,
-//				@ModelAttribute Bookmark bookmark,
-//				HttpSession session,
-//				Model model) {
-//			
-//			Restaurant res = restaurantService.restaurantList(resNo);
-//			List<Attachment> list3 = attachmentService.atList(attachment);
-//			List<Bookmark> list4 = bookmarkService.boselectList(bookmark);
-//			
-//			
-//			model.addAttribute("loginUser", (Member)session.getAttribute("loginUser"));
-//			model.addAttribute("res", res);
-//			model.addAttribute("list3", list3);
-//			model.addAttribute("boolist", list4);
-//			System.out.println(list4);
-//			
-//		
-//			return "restaurant/restaurantList";
-//		}
 		
 		@GetMapping("/restaurantList/{resNo}")
 		public String restaurantList(
@@ -158,9 +136,6 @@ public class RestaurantController {
 				@RequestParam(defaultValue = "0") int sort, 
 				HttpSession session,
 				Model model) {
-			
-			
-			
 
 			// 리뷰 정렬바 카운트
 			int status0 = reviewService.countRate0(resNo);
@@ -205,24 +180,14 @@ public class RestaurantController {
 	 		List<Review> reviewList = reviewService.reviewList(pi, resNo, sort);
 	 		model.addAttribute("reviewList", reviewList);
 	        
-			// 리뷰 사진
-//			for(int i = 0; i < reviewList.size(); i++) {
-//				attachment.setReviewNo(reviewList.get(i).getReviewNo());
-//				
-//			}
+
 			
 			List<Attachment> attReviewList = attachmentService.attReview(attachment);
 			model.addAttribute("attReview", attReviewList);
 			
 			System.out.println(attReviewList);
 			
-//			for(Review r : reviewList) {
-//				for(Attachment a : attReviewList) {
-//					if(r.getReviewNo() == a.getReviewNo()) {
-//						r.setImgName(a.getChangeName());
-//					}
-//				}
-//			}
+
 			
 			Restaurant res = restaurantService.restaurantList(resNo);
 			List<Attachment> list3 = attachmentService.atList(attachment);
@@ -236,17 +201,7 @@ public class RestaurantController {
 			return "restaurant/restaurantList";
 		}	
 	
-//	public String atList(
-//			@ModelAttribute Attachment attachment,
-//			Model model) {
-//		
-//		List<Attachment> list2 = attachmentService.atList(attachment);
-//		
-//		model.addAttribute("at", list2);
-//		System.out.println(list2);
-//		
-//		return "home";
-//	}
+		
 		// 식당 등록 - GET
 	      @GetMapping("/insert.do")
 	      public String insert(HttpSession session, Model model) {

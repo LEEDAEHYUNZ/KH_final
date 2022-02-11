@@ -25,14 +25,11 @@ import com.kh.dplate.member.model.vo.Member;
 @Controller
 public class MemberController {
 	
-	
 	@Autowired
 	private MemberService memberService;
-	
 	@Autowired
     private JavaMailSender mailSender;
-	 
-	 
+	
 
 	// 로그인 요청이 들어왔을 때 처리해주는 메소드
 			@PostMapping("/login.do")
@@ -89,24 +86,7 @@ public class MemberController {
 				return "member/signUp";
 			}
 		
-//			// 회원가입 요청을 처리 해주는 메소드
-//			@PostMapping("/signup.do")
-//			public String signUp(
-//					@ModelAttribute Member m) {
-//				
-//				int result = memberService.signUp(m);
-	//
-//				// 결과에 따라서 응답뷰 지정
-//				if(result > 0) { // 성공
-	//
-//					return "redirect:main.do";
-//				}
-//				else { // 실패
-	//
-//					return "redirect:signUp.do?error";
-//				}
-//				
-//			}
+
 			
 			// 아이디 중복 체크
 			@ResponseBody

@@ -26,6 +26,7 @@ public interface MemberService {
 
 	// 아이디찾기
 	public String getId(Member member);
+	
 	//대현
 	int updateresno(Member m);
 

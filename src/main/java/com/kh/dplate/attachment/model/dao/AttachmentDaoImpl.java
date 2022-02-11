@@ -15,14 +15,12 @@ public class AttachmentDaoImpl implements AttachmentDao{
 	
 	@Autowired
 	private SqlSession sqlSession;
-
-	
 	
 	@Override
 	public List<Attachment> atList(Attachment attachment) {
-
 		return sqlSession.selectList("atList");
 	}
+	
 	// 리뷰 목록
 	@Override
 	public List<Attachment> attReview(Attachment attachment) {
@@ -39,15 +37,11 @@ public class AttachmentDaoImpl implements AttachmentDao{
 	@Override
 	public int updateReview(List<Attachment> list) {
 		int result = 0;
-		
 		for(Attachment attachment : list) {
 			sqlSession.insert("attachment.updateReview", attachment);
 			// System.out.println("포문 첨부파일" + attachment);
 			result++;
 		}
-		
-		System.out.println("dao result : " + result);
-		
 		return result;
 	}
 
@@ -75,7 +69,6 @@ public class AttachmentDaoImpl implements AttachmentDao{
 		for(Attachment a : list) {
 			sqlSession.insert("attachment.insertRestaurant", a);
 		}
-		
 		return result;
 	}
 	

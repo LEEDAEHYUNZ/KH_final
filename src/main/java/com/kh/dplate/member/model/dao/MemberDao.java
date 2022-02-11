@@ -19,7 +19,6 @@ public interface MemberDao {
 	// 비번
 	public String getPw(Member member);
 
-
 	// 사업자 전환
 	int memStatus(int resNo, int memberNo);
 

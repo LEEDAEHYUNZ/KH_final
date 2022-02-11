@@ -18,7 +18,6 @@ public interface AttachmentDao {
 	// 식당 삭제
 	int deleteRestarunt(List<Attachment> list, Restaurant restaurant);
 
-
 	List<Attachment> atList(Attachment attachment);
 	
 	// 리뷰 목록

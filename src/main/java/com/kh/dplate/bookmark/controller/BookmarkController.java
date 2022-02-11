@@ -36,9 +36,6 @@ public class BookmarkController {
 							   @RequestParam int memberNo,
 							   @ModelAttribute Bookmark to,
 							   Model model) {
-
-		
-		
 	    to.setResNo(no);
 	    to.setMemberNo(memberNo);
 	    
@@ -55,7 +52,6 @@ public class BookmarkController {
 							    @ModelAttribute Bookmark to,
 							    Model model) {
 		to.setResNo(no);
-	    
 	    to.setMemberNo(memberNo);
 
 	    // -1된 하트 갯수를 담아오기위함
@@ -109,9 +105,6 @@ public class BookmarkController {
 			// 수하물 => bookmark 객체
 			model.addAttribute("list", list);
 			
-			System.out.println("리스트에 담겨있나?");
-			System.out.println(list);
-			
 			return "mypage/bookmark";
 			} else {
 				session.setAttribute("alertMsg", "로그인 후에 이용하세요.");
@@ -120,14 +113,11 @@ public class BookmarkController {
 			
 		}
 		
-			@PostMapping("/myBookmarkDelete")
-			public String myBookmarkDelete(@RequestParam int bookmarkNo, HttpSession session
-				) {
+		@PostMapping("/myBookmarkDelete")
+		public String myBookmarkDelete(@RequestParam int bookmarkNo, HttpSession session) {
 			
-			
-			int result = bookmarkService.myBookmarkDelete(bookmarkNo);
-			System.out.println(result);
-			session.setAttribute("alertMsg", "삭제가 완료 되었습니다");
-			return "redirect:bookmark";
+		int result = bookmarkService.myBookmarkDelete(bookmarkNo);
+		session.setAttribute("alertMsg", "삭제가 완료 되었습니다");
+		return "redirect:bookmark";
 		}
 }

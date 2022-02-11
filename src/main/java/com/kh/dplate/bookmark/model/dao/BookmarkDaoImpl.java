@@ -12,28 +12,21 @@ import org.springframework.stereotype.Repository;
 import com.kh.dplate.bookmark.model.vo.Bookmark;
 import com.kh.dplate.common.model.vo.PageInfo;
 
-
-
 @Repository
 public class BookmarkDaoImpl implements BookmarkDao{
 
 	@Autowired
 	private SqlSession sqlSession;
 
-
 	@Override
 	public int saveheart(Bookmark to) {
-
 		return sqlSession.insert("bookmark.saveheart", to);
-		
 	}
-
 
 	@Override
 	public int removeheart(Bookmark to) {
 		return sqlSession.delete("bookmark.removeheart", to);
 	}
-
 
 	@Override
 	public List<Bookmark> boselectList(Bookmark bookmark) {
@@ -63,7 +56,6 @@ public class BookmarkDaoImpl implements BookmarkDao{
 
 	@Override
 	public int bookmarkCount(int memberNo) {
-		
 		return sqlSession.selectOne("bookmark.bookmarkCount", memberNo);
 	}
 }
