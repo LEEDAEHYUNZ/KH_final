@@ -407,6 +407,7 @@ public class RestaurantController {
 	    	
 	    	return "member/businessForm";
 	    }
+	    
 	 // 사업자등록
 		@GetMapping("/business.do")
 		public String business(Model model,
